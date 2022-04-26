@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Die from './components/Die/Die';
 import { nanoid } from 'nanoid';
+import ReactConfetti from 'react-confetti';
 
 const App = () => {
 
@@ -16,15 +17,21 @@ const App = () => {
   const [gameWon, setGameWon] = useState(false);
 
   const rollNewDice = () => {
-    setDiceArr(prevDice => prevDice.map(die => die.isHeld ? die : {...die, value: Math.ceil(Math.random() * 6)}));
+    if (gameWon) {
+      setDiceArr(allNewDice);
+      setGameWon(prev => !prev);
+    } else {
+      setDiceArr(prevDice => prevDice.map(die => die.isHeld ? die : {...die, value: Math.ceil(Math.random() * 6)}));
+    }
   };
 
   useEffect(() => {
     console.log('ran');
-    if(diceArr.every(die => die.isHeld) && diceArr.map(die => die.value).filter(dieValue => diceArr[0] === dieValue)){
+    if(diceArr.every(die => die.isHeld) && diceArr.every(die => diceArr[0].value === die.value)){
       setGameWon(prev => !prev);
     }
   }, [diceArr]);
+
 
   const holdFn = (id) => {
     setDiceArr(prev => {
@@ -45,6 +52,7 @@ const App = () => {
   return (
     <main className='section-container'>
       <div className='game-container'>
+        { gameWon && <ReactConfetti />}
         <div className='game-area'>
           <h1>
             Tenzies
