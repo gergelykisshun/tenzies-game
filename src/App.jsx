@@ -1,20 +1,30 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Die from './components/Die/Die';
+import { nanoid } from 'nanoid';
 
 const App = () => {
+
   const allNewDice = () => {
-    return new Array(10).fill(0).map((num,i) => ({
-      id: i,
+    return new Array(10).fill(0).map((num) => ({
+      id: nanoid(),
       value: Math.ceil(Math.random() * 6),
       isHeld: false
     }));
   };
 
   const [diceArr, setDiceArr] = useState(allNewDice());
+  const [gameWon, setGameWon] = useState(false);
 
   const rollNewDice = () => {
-    setDiceArr(allNewDice());
+    setDiceArr(prevDice => prevDice.map(die => die.isHeld ? die : {...die, value: Math.ceil(Math.random() * 6)}));
   };
+
+  useEffect(() => {
+    console.log('ran');
+    if(!diceArr.map(die => die.isHeld).includes(false) && diceArr.map(die => die.value).filter(dieValue => diceArr[0] === dieValue)){
+      setGameWon(prev => !prev);
+    }
+  }, [diceArr]);
 
   const holdFn = (id) => {
     setDiceArr(prev => {
@@ -32,8 +42,6 @@ const App = () => {
 
   };
 
-  console.log(diceArr);
-
   return (
     <main className='section-container'>
       <div className='game-container'>
@@ -47,7 +55,7 @@ const App = () => {
           <div className='dice-container'>
             {diceArr.map(die => <Die holdFn={holdFn} key={die.id} die={die}/>)}
           </div>
-          <button className='roll-btn' onClick={rollNewDice}>Roll</button>
+          <button className='roll-btn' onClick={rollNewDice}>{gameWon ? 'You win!' :' Roll'}</button>
         </div>
       </div>
     </main>

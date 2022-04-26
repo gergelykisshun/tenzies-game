@@ -3,8 +3,6 @@ import React from 'react'
 const Die = ({die, holdFn}) => {
     const {value, id, isHeld} = die;
 
-    console.log(isHeld);
-
     const dieStyle = {
         backgroundColor: isHeld ? '#59E391' : '#fff'
     }
