@@ -3,7 +3,11 @@ import Die from './components/Die/Die';
 
 const App = () => {
   const allNewDice = () => {
-    return new Array(10).fill(0).map(num => Math.ceil(Math.random() * 6));
+    return new Array(10).fill(0).map((num,i) => ({
+      id: i,
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false
+    }));
   };
 
   const [diceArr, setDiceArr] = useState(allNewDice());
@@ -11,6 +15,24 @@ const App = () => {
   const rollNewDice = () => {
     setDiceArr(allNewDice());
   };
+
+  const holdFn = (id) => {
+    setDiceArr(prev => {
+      return prev.map(die => {
+        if (die.id === id) {
+          return {
+            ...die,
+            isHeld: !die.isHeld
+          };
+        } else {
+          return die;
+        }
+      });
+    })
+
+  };
+
+  console.log(diceArr);
 
   return (
     <main className='section-container'>
@@ -23,7 +45,7 @@ const App = () => {
             </p>
           </h1>
           <div className='dice-container'>
-            {diceArr.map(die => <Die value={die}/>)}
+            {diceArr.map(die => <Die holdFn={holdFn} key={die.id} die={die}/>)}
           </div>
           <button className='roll-btn' onClick={rollNewDice}>Roll</button>
         </div>
