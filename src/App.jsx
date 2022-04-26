@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     console.log('ran');
-    if(!diceArr.map(die => die.isHeld).includes(false) && diceArr.map(die => die.value).filter(dieValue => diceArr[0] === dieValue)){
+    if(diceArr.every(die => die.isHeld) && diceArr.map(die => die.value).filter(dieValue => diceArr[0] === dieValue)){
       setGameWon(prev => !prev);
     }
   }, [diceArr]);
